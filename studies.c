@@ -179,6 +179,7 @@ char* appendl_char(char s[], char c){
 	ns[i] = s[i-1];
 }
     ns[strlen+1]='\0';
+    free(s);
     return ns;
 }
 
@@ -207,6 +208,39 @@ int str_to_int(char s[]){
     return r;
 }
 
+char * strcopy(char s[]){
+    int len =stringlen(s);
+    int i = 0;
+    char * ns = (char*) malloc(len*sizeof(char)+1);
+    while(s[i]!='\0'){
+    ns[i] = s[i];
+    i++;
+}
+    ns[len] = '\0';
+    return ns;
+}
+
+
+char* int_to_str2(int n){
+//    char* str ="";
+    char* str = strcopy("");
+    int i = 0;
+    while(n/(int)pow(10, i) != 0){
+        i++;
+	char* temp = str;
+    	str = appendl_char(str, n%(int)pow(10,i)/pow(10,i-1)+48 );
+//	free(temp);
+//  caller делает free - избегает лишних копирований
+//  callee (внутри append_l) делает free - простой, лишние копирования
+        //i++;
+}
+//    for(int i = 1; i<=3; i++){
+//	str[counter-i]= n%(int)pow(10,i)/pow(10, i-1)+48;    
+//	str = appendl_char(str, n%(int)pow(10,i)/pow(10,i-1)+48 );
+//    }
+    return str;
+}
+
 char* int_to_str(int n){
     int counter = 0;
     char* str;
@@ -233,13 +267,51 @@ char* add1(char s1[], char s2[]){
     return r;
 }
 
-
-
-
-
 char* add2(char s1[], char s2[]){
 
+    int str1len = stringlen(s1);
+    int str2len = stringlen(s2);
+    char* r;
+    r = (char*)malloc(str1len*sizeof(char)+1);
+    
+    return r;
+}
 
+
+
+//char* add2(char s1[], char s2[]){
+
+
+//}
+
+
+int isSorted(int ar[], int len){
+//    int temp = ar[0];
+    for(int i = 1; i < len; i++){
+        if(ar[i-1]> ar[i]){
+	    return 0;
+        }
+    }
+    return 1;
+}
+
+void bubbleSort(int s[], int len){
+    int temp;
+    while(isSorted(s, len) == 0){
+        for(int i =1; i < len;i++){
+    	    if(s[i-1]>s[i]){
+	    temp = s[i-1];
+	    s[i-1]=s[i];
+	    s[i]=temp;
+	    }
+	}
+    }
+}
+
+void printArray(int s[], int len){
+    for(int i =0; i< len; i++ ){
+	    printf("%d", s[i]);
+    }
 }
 
 int main(){
@@ -256,9 +328,15 @@ int main(){
 //    is_polindrome("aaa");   
 //    is_polindrome("ojojob");
 //    is_substring("asa", "asbaaaaasa");
-    printf("%s", add1("33","33") );
+//    printf("%s", int_to_str2(1) );
 //    printf("%d", 124%10/1);
 //    printf("%d\n",is_substring_mod("asa", "ssssssssssssssasa"));
 //    is_substring_mod("asa", "asbaaaaasa");
+    int ar[] = {1, 3,  7, 6, 5 ,2};
+    const int len = 6;
+    printArray(ar, len);
+    bubbleSort(ar,len);
+    printf(" %d\n", isSorted(ar,len) );
+    printArray(ar, len);
     return 0;
 }
