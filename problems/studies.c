@@ -268,12 +268,50 @@ char* add1(char s1[], char s2[]){
 }
 
 char* add2(char s1[], char s2[]){
-
     int str1len = stringlen(s1);
     int str2len = stringlen(s2);
+    int reallen;
+    int end1 =str1len-1;
+    int end2 =str2len-1;
+    int end3;
     char* r;
-    r = (char*)malloc(str1len*sizeof(char)+1);
-    
+    int sum = 0;
+    int flag = 0;
+
+    //allocating memory for based on biggest string
+    if(str1len > str2len){
+	r = (char*)malloc(str1len*sizeof(char)+2);
+	reallen = str1len+2;
+	r[reallen-1] = '\0';
+	end3 = reallen-2;
+	
+    }else{
+	r = (char*)malloc(str2len*sizeof(char)+2);
+	reallen= str2len +2;
+	r[reallen-1] = '\0';
+	end3 = reallen-2;
+    }
+
+	for(int i = reallen-2; i >= 0; i--){
+	    if(end1 >= 0)sum+= s1[end1]-48;
+	    if(end2 >= 0)sum+= s2[end2]-48;
+	    if(flag > 0)sum++;
+	    r[i] =(char)sum%10+48;
+	    if(sum/10 > 0){
+		flag = 1;
+	    }else{
+		flag = 0;
+	    }
+	    end1--;
+	    end2--;
+	    sum = 0;
+	}
+    if(r[0]<49||r[0]>57){
+	for(int i = 0; i< reallen-1; i++){
+	    r[i]= r[i+1];
+	}
+	r = realloc(r, reallen-1);
+    }
     return r;
 }
 
@@ -316,27 +354,28 @@ void printArray(int s[], int len){
 
 int main(){
 
-//    printf("%d",is_beginning("sss", "sssas"));
-//    printf("%d",is_beginning("sss", "sss"));%
-//    printf("%d",is_beginning("sss", "ssasa"));
-//    printf("aaasass %s\n", upcase("aaasass"));
-//    printf("asasab %s\n", swap_case("asasab"));
-//    printf("aaa %s\n", dupstring("aaa", 3));
-//    printf("laaa1233AAA15 %s %d\n", appendr_char("aaa1233AAA15",'l'),(int)pow(10, 2) );
-//    printf("%d %d", str_to_int("696969"), '1');
-//    is_polindrome("ojojojojojojojojojojojojojojojo");
-//    is_polindrome("aaa");   
-//    is_polindrome("ojojob");
-//    is_substring("asa", "asbaaaaasa");
-//    printf("%s", int_to_str2(1) );
-//    printf("%d", 124%10/1);
-//    printf("%d\n",is_substring_mod("asa", "ssssssssssssssasa"));
-//    is_substring_mod("asa", "asbaaaaasa");
+/*    printf("%d",is_beginning("sss", "sssas"));
+    printf("%d",is_beginning("sss", "sss"));%
+    printf("%d",is_beginning("sss", "ssasa"));
+    printf("aaasass %s\n", upcase("aaasass"));
+    printf("asasab %s\n", swap_case("asasab"));
+    printf("aaa %s\n", dupstring("aaa", 3));
+    printf("laaa1233AAA15 %s %d\n", appendr_char("aaa1233AAA15",'l'),(int)pow(10, 2) );
+    printf("%d %d", str_to_int("696969"), '1');
+    is_polindrome("ojojojojojojojojojojojojojojojo");
+    is_polindrome("aaa");   
+    is_polindrome("ojojob");
+    is_substring("asa", "asbaaaaasa");
+    printf("%s", int_to_str2(1) );
+    printf("%d", 124%10/1);
+    printf("%d\n",is_substring_mod("asa", "ssssssssssssssasa"));
+    is_substring_mod("asa", "asbaaaaasa");
     int ar[] = {1, 3,  7, 6, 5 ,2};
     const int len = 6;
     printArray(ar, len);
     bubbleSort(ar,len);
     printf(" %d\n", isSorted(ar,len) );
-    printArray(ar, len);
+    printArray(ar, len);*/
+    printf("%s",add2(add2("111","111"), "222"));
     return 0;
 }
