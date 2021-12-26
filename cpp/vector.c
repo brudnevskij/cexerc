@@ -50,6 +50,9 @@ class Vector {
 	    if(n > occupied) cout << "Index is out of scope" << "\n";
 	    return repo[n];
 	}
+	void destruct(){
+	    free(repo);
+	}
     private:
 	void addCap(){
 	    capacitance = capacitance*2;
@@ -72,5 +75,6 @@ int main(){
     vector.deleteElement(0);
     vector.printAr();
     cout << vector.getElement(0);
+    vector.destruct();
     return 0;
 }
