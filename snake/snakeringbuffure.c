@@ -14,14 +14,14 @@ int* xcoordinates;
 int* ycoordinates;
 int x = 0;
 int y = 0;
-	int xapple;
-	int yapple;
-	time_t t;
-	char* snakesprite = "#";
-	char* applesprite = "@";
-	int inputchar =0;
-	int coordinates;
-
+int xapple;
+int yapple;
+time_t t;
+char* snakesprite = "#";
+char* applesprite = "@";
+int inputchar =0;
+int coordinates;
+int snakehead = 0;
 
 int getrandomint(int max){
     int random = (int)rand()%max;
@@ -64,23 +64,46 @@ void killapple(){
 // O(1)
 void addlength(){
      snakelength++;
+    if(snakelength == coordinates) snakelength = 0;
+    
     xcoordinates[snakelength] = x;
     ycoordinates[snakelength] = y;
 }
 
 // O(snakelength)
 void removelength(){
-    for(int i = 0; i < snakelength; i++){
-	xcoordinates[i] = xcoordinates[i+1];
-	ycoordinates[i] = ycoordinates[i+1];
-    }
-    snakelength--;
+    snakehead++;
+    if(snakehead == coordinates) snakehead = 0;
+    
 }
 
+
+//9 7 5 3 1 8 3 5 7 2 4
+//  ^         ^               
+//  length    head  
+
 void writebody(){
-    for(int i = 0; i < snakelength; i++){
+    if(snakelength < snakehead){
+	for(int i = snakehead; i < coordinates; i++){
 	mvaddstr(ycoordinates[i], xcoordinates[i], snakesprite);
+	}
+	for(int j = 0; j < snakelength; j++){
+	mvaddstr(ycoordinates[j], xcoordinates[j], snakesprite);
+	}
+    }else{
+	for(int i = snakehead; i < snakelength; i++){
+	    mvaddstr(ycoordinates[i], xcoordinates[i], snakesprite);
+        }
     }
+}
+
+int coldetect(){
+    for(int i = snakehead+1; i < snakelength; i++){
+	if(x == xcoordinates[i] && y == ycoordinates[i]){
+	    return 1;
+	}
+    }
+	return 0;
 }
 
 int main(){
@@ -103,6 +126,7 @@ int main(){
 	    if(inputchar == 97) mvl(&x);
 	    if(inputchar == 100) mvr(&x);
 	    if(x == xapple && y == yapple) killapple();
+	    if(coldetect() == 1) inputchar = 48;
 	    addlength();
 	    if(appleflag == 1) removelength();
 	    if(appleflag == 0)spawnapple(&xapple, &yapple);
