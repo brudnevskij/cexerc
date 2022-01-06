@@ -184,16 +184,18 @@ char* appendl_char(char s[], char c){
 }
 
 char* appendr_char(char s[], char c){
-    char* ns;
+//    char* ns;
     int strlen = stringlen(s);
-    ns = (char*)malloc(strlen*sizeof(char)+2);
-
+//    ns = (char*)malloc(strlen*sizeof(char)+2);
+    char* ns  = "adwwadw";
+    //char ns[strlen+1]="hfhgfgh";
     for(int i = 0; i < strlen+1;i++){
 	ns[i] = s[i];
 }
     ns[strlen]= c;
     ns[strlen+1]='\0';
     return ns;
+    // уничтожит ns
 }
 
 int str_to_int(char s[]){
@@ -315,7 +317,11 @@ char* add2(char s1[], char s2[]){
     return r;
 }
 
-
+char* multiply(char s1[], char s2[]){
+    char* r;
+    
+    return r;
+}
 
 //char* add2(char s1[], char s2[]){
 
@@ -324,7 +330,6 @@ char* add2(char s1[], char s2[]){
 
 
 int isSorted(int ar[], int len){
-//    int temp = ar[0];
     for(int i = 1; i < len; i++){
         if(ar[i-1]> ar[i]){
 	    return 0;
@@ -352,6 +357,60 @@ void printArray(int s[], int len){
     }
 }
 
+
+
+char* multonechar(char* s, char c, int lens){
+    char* ns;
+    int cval = c-48;
+    ns = (char*)malloc(lens*sizeof(char)+2);
+    ns[lens+1] = '\0';
+    int carry= 0;
+    int prod = 0;
+    int end = lens -1;
+    for(int i = 0; i < lens+1; i++){
+	if(end>=0)prod = cval*(s[end]-48);
+	prod+=carry;
+	ns[lens-i]= (prod%10)+48;
+	carry = prod/10;
+	prod=0;
+	end--;
+    }
+
+    if(ns[0]<49||ns[0]>57){
+	for(int j = 0; j<lens+1; j++){
+	    ns[j]= ns[j+1];
+	}
+	ns = realloc(ns, lens);
+    }
+
+    return ns;
+}
+
+
+char* multonten(char* s, int n){
+    char* ns;
+    int len = stringlen(s);
+    ns = (char*)malloc(len*sizeof(char)+n+1);
+    ns[len+n]='\0';
+    for(int i =0; i< len+n; i++){
+	if(i<len)ns[i]=s[i];
+	if(i>=len)ns[i]='0';
+    }
+    return ns;
+}
+
+char* mult(char s1[], char s2[]){
+    char* ns ="0";
+    int lens1 = stringlen(s1);
+    int lens2 = stringlen(s2);
+    for(int i = 0; i< lens1; i++){
+	ns = add2(multonten(multonechar(s2, s1[lens1-1-i], lens2) , i),ns);
+    }
+
+    return ns;
+}
+
+
 int main(){
 
 /*    printf("%d",is_beginning("sss", "sssas"));
@@ -376,6 +435,10 @@ int main(){
     bubbleSort(ar,len);
     printf(" %d\n", isSorted(ar,len) );
     printArray(ar, len);*/
-    printf("%s",add2(add2("111","111"), "222"));
+//    printf("%s",add2(multonten(add2("111","111"),2), "222"));
+//    printf("%s", multonechar("9",'0',1));
+//    printf("%s", mult("1", "900"));
+//    printf("%s", multonten("0", 2));
+//    printf("%s", add2("000","900"));
     return 0;
 }
