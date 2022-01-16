@@ -11,6 +11,8 @@ struct list* link;
 
 };
 
+struct list* swaplist(struct list* list);
+
 void freelist(struct list*);
 
 int stringlen(char s[]){
@@ -477,21 +479,23 @@ struct list* split(char* s){
     do{
 	i++;
 	if(s[i]==' '|| s[i] == '\0'){
-	    temp = list;
 	    list = addlist2(list, copytilspace(s, start));
 	    start = i+1;
 	}
 	
 	}while(s[i] != '\0');
-
-    return list;
+	temp = swaplist(list);
+	freelist(list);
+    return temp;
 }
 
 struct list* swaplist(struct list* list){
     struct list* nl =NULL;
     while(list!=NULL){
-    
+	nl = addlist2(nl, list->word);
+	list = list->link;
     }
+    return nl;
 }
 
 void freelist(struct list* list){
@@ -518,6 +522,6 @@ int main(){
     a->link = NULL;
     struct list* b;
     b = NULL;
-
+    printlist(split("hello world"));
     return 0;
 }
