@@ -2,6 +2,17 @@
 #include <stdlib.h>
 #include <math.h>
 
+
+
+struct list{
+
+char* word;
+struct list* link;
+
+};
+
+void freelist(struct list*);
+
 int stringlen(char s[]){
     int r = 0;
     while(s[r]!='\0'){
@@ -411,34 +422,119 @@ char* mult(char s1[], char s2[]){
 }
 
 
+struct list* addlist(struct list* start, char* value){
+    struct list* nm;
+    struct list* end;
+    while(start!=NULL){
+	if(start->link==NULL)end = start;
+	start = start->link;
+    }
+    nm = (struct list*) malloc(sizeof(struct list));
+    nm->word = value;
+    nm->link = NULL;
+    end->link = nm;
+    return start;
+}
+
+struct list* addlist2(struct list* start, char* value){
+    struct list* newmember;
+    newmember = (struct list*)malloc(sizeof(struct list));
+    newmember->word = value;
+    newmember->link = start;
+    return newmember;
+}
+
+void printlist(struct list* list){
+    while(list!=NULL){
+	printf("%s\n", list->word);
+	list = list->link;
+    }
+
+}
+
+char* copytilspace(char* s, int start){
+    int counter = 0;
+    int i = start;
+    while((s[i] != ' ')&&(s[i] != '\0') ){
+	counter++;
+	i++;
+    }
+    char* ns;
+    ns = (char*)malloc(counter*sizeof(char)+1);
+    ns[counter]='\0';
+    i = start;
+    for(int j = 0; j < counter; j++){
+	ns[j] = s[start+j];
+    }
+    return ns;
+}
+
+struct list* split(char* s){
+    int i =-1;
+    int start = 0;
+    struct list* list = NULL;
+    struct list* temp;
+    do{
+	i++;
+	if(s[i]==' '|| s[i] == '\0'){
+	    temp = list;
+	    list = addlist2(list, copytilspace(s, start));
+	    start = i+1;
+	}
+	
+	}while(s[i] != '\0');
+
+    return list;
+}
+
+struct list* swaplist(struct list* list){
+    struct list* nl =NULL;
+    while(list!=NULL){
+    
+    }
+}
+
+void freelist(struct list* list){
+    struct list* temp = list;
+    while(list != NULL){
+	list = list->link;
+	if(list->link == NULL){
+	    free(list);
+	    list = NULL;
+	}else{
+	    free(temp);
+	temp = list;
+	}
+    }
+    free(list);
+}
+
 int main(){
 
-/*    printf("%d",is_beginning("sss", "sssas"));
-    printf("%d",is_beginning("sss", "sss"));%
-    printf("%d",is_beginning("sss", "ssasa"));
-    printf("aaasass %s\n", upcase("aaasass"));
-    printf("asasab %s\n", swap_case("asasab"));
-    printf("aaa %s\n", dupstring("aaa", 3));
-    printf("laaa1233AAA15 %s %d\n", appendr_char("aaa1233AAA15",'l'),(int)pow(10, 2) );
-    printf("%d %d", str_to_int("696969"), '1');
-    is_polindrome("ojojojojojojojojojojojojojojojo");
-    is_polindrome("aaa");   
-    is_polindrome("ojojob");
-    is_substring("asa", "asbaaaaasa");
-    printf("%s", int_to_str2(1) );
-    printf("%d", 124%10/1);
-    printf("%d\n",is_substring_mod("asa", "ssssssssssssssasa"));
-    is_substring_mod("asa", "asbaaaaasa");
-    int ar[] = {1, 3,  7, 6, 5 ,2};
-    const int len = 6;
-    printArray(ar, len);
-    bubbleSort(ar,len);
-    printf(" %d\n", isSorted(ar,len) );
-    printArray(ar, len);*/
-//    printf("%s",add2(multonten(add2("111","111"),2), "222"));
-//    printf("%s", multonechar("9",'0',1));
-//    printf("%s", mult("1", "900"));
-//    printf("%s", multonten("0", 2));
-//    printf("%s", add2("000","900"));
+
+    struct list* a;
+    a =malloc(sizeof(struct list));
+    a->word ="qqqwadwad";
+    a->link = NULL;
+    struct list* b;
+    b = NULL;
+//    addlist2(b, "huy");
+//    b =malloc(sizeof(struct list));
+//    b->word ="wadwad";
+//    b->link = a;
+//    addlist( b, "jopa");
+//    addlist(b, "hus");
+//    printlist(b);
+//    printf("%s", copytilspace("jopa", 0));
+//    copytilspace("huy", 0);
+    struct list* nl =split("huy jopa chlen aaaa");
+    printlist(nl);
+    freelist(nl);
+    freelist(NULL);
+//    printlist(nl);
+//printf("%s", copytilspace("huy jopa chlen", 0));
+//printf("%s", copytilspace("huy jopa chlen", 0));
+//printf("%s", copytilspace("huy jopa chlen", 0));
+//split("as as as");
     return 0;
 }
