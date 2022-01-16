@@ -518,23 +518,6 @@ int main(){
     a->link = NULL;
     struct list* b;
     b = NULL;
-//    addlist2(b, "huy");
-//    b =malloc(sizeof(struct list));
-//    b->word ="wadwad";
-//    b->link = a;
-//    addlist( b, "jopa");
-//    addlist(b, "hus");
-//    printlist(b);
-//    printf("%s", copytilspace("jopa", 0));
-//    copytilspace("huy", 0);
-    struct list* nl =split("huy jopa chlen aaaa");
-    printlist(nl);
-    freelist(nl);
-    freelist(NULL);
-//    printlist(nl);
-//printf("%s", copytilspace("huy jopa chlen", 0));
-//printf("%s", copytilspace("huy jopa chlen", 0));
-//printf("%s", copytilspace("huy jopa chlen", 0));
-//split("as as as");
+
     return 0;
 }
