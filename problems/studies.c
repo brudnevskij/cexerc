@@ -513,15 +513,22 @@ void freelist(struct list* list){
     free(list);
 }
 
+
+
+char* compare(char* s1, char* s2){
+    int len1 = stringlen(s1);
+    int len2 = stringlen(s2);
+    if(len1> len2)return s1;
+    if(len2> len1)return s2;
+    for(int i = 0; i<len1; i++){
+	if(s1[i]>s2[i])return s1;
+	if(s2[i]>s1[i])return s2;
+    }
+    return "equal";
+}
+
 int main(){
 
-
-    struct list* a;
-    a =malloc(sizeof(struct list));
-    a->word ="qqqwadwad";
-    a->link = NULL;
-    struct list* b;
-    b = NULL;
-    printlist(split("hello world"));
+    printf("%s", compare("1923", "1099"));
     return 0;
 }
