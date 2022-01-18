@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-//1. передвижение буквы
-//2. контроль выхода за границы экрана
-//3. яблоко
+
 
 int scrx;
 int scry;

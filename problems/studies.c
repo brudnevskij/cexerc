@@ -15,6 +15,8 @@ struct list* swaplist(struct list* list);
 
 void freelist(struct list*);
 
+
+
 int stringlen(char s[]){
     int r = 0;
     while(s[r]!='\0'){
@@ -524,11 +526,85 @@ char* compare(char* s1, char* s2){
 	if(s1[i]>s2[i])return s1;
 	if(s2[i]>s1[i])return s2;
     }
-    return "equal";
+    return NULL;
 }
 
-int main(){
+char* comparesm(char* s1, char* s2){
+    int len1 = stringlen(s1);
+    int len2 = stringlen(s2);
+    if(len1< len2)return s1;
+    if(len2< len1)return s2;
+    for(int i = 0; i<len1; i++){
+	if(s1[i]>s2[i])return s2;
+	if(s2[i]>s1[i])return s1;
+    }
+    return NULL;
+}
 
-    printf("%s", compare("1923", "1099"));
+char* moveleft(char* s){
+    int len = stringlen(s);
+    char* ns = (char*) malloc(len*sizeof(char));
+    ns[len-1]='\0';
+    for(int i = 0; i<len-1; i++){
+	ns[i]= s[i+1];
+    }
+    free(s);
+    return ns;
+}
+
+char* substract(char* s1, char* s2){
+    char* bigger = compare(s1,s2);
+    char* smaller = comparesm(s1,s2);
+    int len1 = stringlen(s1);
+    int len2 = stringlen(s2);
+    int sent1;
+    int sent2;
+    int sub1;
+    int sub2;
+    int carry = 0;
+    int i;
+    char* result;
+    if(bigger == NULL){
+	result =(char*)malloc(len1+1);
+	result[len1]='\0';
+	i = len1-1;
+	sent1 = len1-1;
+	bigger= s1;
+	smaller = s2;
+	sent2 = len2-1;
+    }else{
+	result= (char*)malloc(stringlen(bigger)+1);
+	i = stringlen(bigger)-1;
+	result[i+1]='\0';
+	sent1= stringlen(bigger)-1;
+	sent2 = stringlen(smaller)-1;
+    }
+    while( i >=0){
+	if(sent1>=0)sub1 = bigger[sent1]-48;
+	if(sent2>=0)sub2= smaller[sent2]-48;
+	result[i] = sub1 - sub2 +carry+48;
+	sub1 = 0;
+	sub2 = 0;
+	if(result[i]<48){
+	     result[i] = result[i]+10;
+	    carry =-1;
+	}else{
+	    carry =0;
+	}
+	sent1--;
+	sent2--;
+	i--;
+    }
+    while(result[0] =='0'&&stringlen(result)>1){
+	result = moveleft(result);
+    }
+
+    return result;
+}
+
+
+
+int main(){
+    printf("%s", substract("1000","999"));
     return 0;
 }
