@@ -6,10 +6,8 @@
 
 
 struct list{
-
 char* word;
 struct list* link;
-
 };
 
 int freecounter = 0;
@@ -81,7 +79,6 @@ char* add2(char s1[], char s2[]){
 	r[reallen-1] = '\0';
 	end3 = reallen-2;
     }
-
 	for(int i = reallen-2; i >= 0; i--){
 	    if(end1 >= 0)sum+= s1[end1]-48;
 	    if(end2 >= 0)sum+= s2[end2]-48;
@@ -184,11 +181,12 @@ struct list* addlist2(struct list* start, char* value){
 }
 
 void printlist(struct list* list){
+    struct list* temp = list;
     while(list!=NULL){
 	printf("%s\n", list->word);
 	list = list->link;
     }
-    freelistnwords(list);
+    freelistnwords(temp);
 }
 
 char* copytilspace(char* s, int start){
@@ -234,7 +232,7 @@ struct list* swaplist(struct list* list){
     }
     return nl;
 }
-
+/*
 void freelist(struct list* list){
     struct list* temp = list;
     while(list != NULL){
@@ -249,7 +247,29 @@ void freelist(struct list* list){
     }
     free(list);
 }
+*/
+void freelist(struct list* list){
+    if(list == NULL)return;
+    struct list* temp;
+    do{
+	temp = list;
+	list = list->link;
+	free(temp);
+    }while(list!=NULL);
+}
 
+void freelistnwords(struct list* list){
+    if(list == NULL)return;
+    struct list* temp;
+    do{
+	temp = list;
+	list = list->link;
+	free(temp->word);
+	free(temp);
+    }while(list!=NULL);
+}
+
+/*
 void freelistnwords(struct list* list){
     struct list* temp = list;
     while(list != NULL){
@@ -266,7 +286,7 @@ void freelistnwords(struct list* list){
     }
     free(temp);
 }
-
+*/
 
 
 char* compare(char* s1, char* s2){
@@ -350,7 +370,8 @@ char* substract(char* s1, char* s2){
     while(result[0] =='0'&&stringlen(result)>1){
 	result = moveleft(result);
     }
-
+	free(s1);
+	free(s2);
     return result;
 }
 
@@ -377,6 +398,7 @@ struct list* calculate(struct list* list){
 	    stack = addlist2(stack->link->link ,add2(stack->word, stack->link->word));
 	    free(temp1);
 	    free(temp2);
+	    free(list->word);
 	}
 	else if(equal(list->word, "-")){
 	    temp1 = stack;
@@ -384,6 +406,7 @@ struct list* calculate(struct list* list){
 	    stack = addlist2(stack->link->link ,substract(stack->word, stack->link->word));
 	    free(temp1);
 	    free(temp2);
+	    free(list->word);
 	}
 	else if(equal(list->word, "*")){
 	    temp1 = stack;
@@ -391,10 +414,14 @@ struct list* calculate(struct list* list){
 	    stack = addlist2(stack->link->link ,mult(stack->word, stack->link->word));
 	    free(temp1);
 	    free(temp2);
+	    free(list->word);
 	}else{
 	    stack = addlist2(stack, list->word);
 	}
+	temp1 = list;
 	list = list->link;
+	free(temp1);
+	
     }
 
     return stack;
@@ -402,7 +429,9 @@ struct list* calculate(struct list* list){
 
 
 int main(){
-    printlist(calculate(split("1 1 + 22 * 12")));
+    printlist(calculate(split("1 1 + 44 * 88 -")));
+//    freelistnwords(NULL);
+//    freelist(NULL);
     printf("\n free: %d , malloc: %d\n", freecounter, malloccounter);
     return 0;
 }
