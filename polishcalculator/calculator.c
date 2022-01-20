@@ -502,6 +502,7 @@ struct list* calculate(struct list* list){
     struct list* stack = NULL;
     struct list* temp1;
     struct list* temp2;
+    char* tempch;
     while(list!=NULL){
 	if(equal(list->word, "+")){
 	    temp1 = stack;
@@ -526,7 +527,22 @@ struct list* calculate(struct list* list){
 	    free(temp1);
 	    free(temp2);
 	    free(list->word);
-	}else{
+	}else if(equal(list->word, "dup")){
+	    stack = addlist2(stack,strcopy(stack->word));
+	    free(list->word);
+	}else if(equal(list->word, "swap")){
+	    tempch = stack->word;
+	    stack->word = stack->link->word;
+	    stack->link->word = tempch;
+	    free(list->word);
+	}else if(equal(list->word, "drop")){
+	    temp1 = stack;
+	    stack = stack->link;
+	    free(temp1->word);
+	    free(temp1);
+	    free(list->word);
+	}
+	else{
 	    stack = addlist2(stack, list->word);
 	}
 	temp1 = list;
@@ -538,9 +554,27 @@ struct list* calculate(struct list* list){
     return stack;
 }
 
+struct list* newsplit(char* s){
+    int i = 0;
+    int start = 0;
+    struct list* nl = NULL;
+    struct list* temp;
+    while(s[i] != '\0'){
+	    if(s[i]!=' '){
+		nl = addlist2(nl, copytilspace(s,i));
+	    while(s[i]!= ' ' && s[i]!= '\0')i++;
+	    }
+	i++;
+    }
+	free(s);
+	temp = swaplist(nl);
+	freelist(nl);
+    return temp;
+}
 
 int main(){
-    printlist(calculate(split("1 1 + 44 * -88 +")));
+    printlist(calculate(newsplit(strcopy("22 23 drop"))));
+//    printlist(newsplit(strcopy("1    1    +   44  *   -88   +")));
     printf("\n free: %d , malloc: %d\n", freecounter, malloccounter);
     return 0;
 }
