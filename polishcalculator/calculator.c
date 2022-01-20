@@ -17,7 +17,9 @@ struct list* swaplist(struct list* list);
 
 void freelist(struct list*);
 void freelistnwords(struct list*);
-
+char* substract(char*, char*);
+int equal(char*, char*);
+char* moveleft(char*);
 
 void myfree(void* a, int linen, const char* caller){
     printf("free've been called from line:%d, caller name :%s\n", linen, caller);
@@ -66,7 +68,6 @@ char* add2(char s1[], char s2[]){
     int sum = 0;
     int flag = 0;
 
-    //allocating memory for based on biggest string
     if(str1len > str2len){
 	r = (char*)malloc(str1len*sizeof(char)+2);
 	reallen = str1len+2;
@@ -154,6 +155,9 @@ char* mult(char s1[], char s2[]){
     }
     free(s1);
     free(s2);
+    while(ns[0] =='0'&&stringlen(ns)>1){
+	ns = moveleft(ns);
+    }
     return ns;
 }
 
@@ -232,22 +236,7 @@ struct list* swaplist(struct list* list){
     }
     return nl;
 }
-/*
-void freelist(struct list* list){
-    struct list* temp = list;
-    while(list != NULL){
-	list = list->link;
-	if(list->link == NULL){
-	    free(list);
-	    list = NULL;
-	}else{
-	    free(temp);
-	temp = list;
-	}
-    }
-    free(list);
-}
-*/
+
 void freelist(struct list* list){
     if(list == NULL)return;
     struct list* temp;
@@ -268,26 +257,6 @@ void freelistnwords(struct list* list){
 	free(temp);
     }while(list!=NULL);
 }
-
-/*
-void freelistnwords(struct list* list){
-    struct list* temp = list;
-    while(list != NULL){
-	list = list->link;
-	if(list->link == NULL){
-	    free(list->word);
-	    free(list);
-	    list = NULL;
-	}else{
-	    free(temp->word);
-	    free(temp);
-	temp = list;
-	}
-    }
-    free(temp);
-}
-*/
-
 
 char* compare(char* s1, char* s2){
     int len1 = stringlen(s1);
@@ -322,6 +291,160 @@ char* moveleft(char* s){
     }
     free(s);
     return ns;
+}
+
+char* moveleftnf(char* s){
+    int len = stringlen(s);
+    char* ns = (char*) malloc(len*sizeof(char));
+    ns[len-1]='\0';
+    for(int i = 0; i<len-1; i++){
+	ns[i]= s[i+1];
+    }
+    return ns;
+}
+
+char* addminus(char* s){
+    int len = stringlen(s);
+    char* ns = (char*)malloc(sizeof(char)*len+2);
+    ns[0] = '-';
+    ns[len+1]='\0';
+    int i = 1;
+    while(ns[i]!='\0'){
+	ns[i]=s[i-1];
+	i++;
+    }
+    free(s);
+    return ns;
+}
+
+int equal(char* s1, char* s2){
+    int i = 0;
+    int len1 = stringlen(s1);
+    int len2 = stringlen(s2);
+    if(len1 != len2)return 0;
+    while(s1[i] !='\0'&& s2[i]!='\0'){
+	if(s1[i]!= s2[i])return 0;
+	i++;
+    }
+    return 1;
+}
+
+
+char* dispatchadd(char* s1, char* s2){
+    char* ns;
+    int sign1 = 0;
+    int sign2 = 0;
+    char* comparer;
+    if(s1[0]=='-')sign1 =1;
+    if(s2[0] == '-')sign2 = 1;
+    if(sign1 && sign2){
+	ns = add2(moveleft(s1), moveleft(s2));
+	ns = addminus(ns);
+	return ns;
+    }
+    else if(sign1 && !sign2){
+	comparer = moveleftnf(s1);
+	if(compare(comparer,s2) == comparer){
+	    ns = substract(moveleft(s1), s2);
+	    ns = addminus(ns);
+	    free(comparer);
+	    return ns;
+	}
+	free(comparer);
+	ns = substract(moveleft(s1), s2);
+	return ns;
+    }
+    else if(!sign1 && sign2){
+	    comparer = moveleftnf(s2);
+	if(compare(s1,comparer) == comparer){
+	    ns = substract(moveleft(s2), s1);
+	    ns = addminus(ns);
+	    free(comparer);
+	    return ns;
+	}
+	ns = substract(moveleft(s2), s1);
+	free(comparer);
+	return ns;
+    }
+    else{
+	ns = add2(s1,s2);
+	return ns;
+    }
+}
+
+char* dispatchmult(char* s1, char* s2){
+    char* ns;
+    int sign1 = 0;
+    int sign2 = 0;
+    if(s1[0]=='-')sign1 =1;
+    if(s2[0] == '-')sign2 = 1;
+    if(sign1 && sign2){
+	ns =mult(moveleft(s1), moveleft(s2));
+	return ns;
+    }else if(sign1 && !sign2){
+	ns = mult(moveleft(s1), s2);
+	if(ns[0]=='0')return ns;
+	return addminus(ns);
+    }else if(!sign1 && sign2){
+	ns = mult(s1, moveleft(s2));
+	if(ns[0]=='0')return ns;
+	return addminus(ns);
+    }else{
+	ns = mult(s1,s2);
+	return ns;
+    }
+}
+
+char* dispatchsub(char* s1, char* s2){
+    char* ns;
+    int sign1 = 0;
+    int sign2 = 0;
+    char* comparer1 = moveleftnf(s1);
+    char* comparer2 = moveleftnf(s2);
+    if(s1[0]=='-')sign1 =1;
+    if(s2[0] == '-')sign2 = 1;
+    if(sign1 && sign2){
+	ns =substract(moveleft(s1), moveleft(s2));
+	if(compare(comparer1, comparer2) == comparer2){
+	    free(comparer1);
+	    free(comparer2);
+	    return ns;
+	}
+	if(compare(comparer1, comparer2) == comparer1){
+	    free(comparer1);
+	    free(comparer2);
+	    return addminus(ns);
+	}
+	free(comparer1);
+	free(comparer2);
+	return  ns;
+    }else if(sign1 && !sign2){
+	ns = add2(moveleft(s1), s2);
+	free(comparer1);
+	free(comparer2);
+	return addminus(ns);
+    }else if(!sign1 && sign2){
+	ns = add2(s1, moveleft(s2));
+	free(comparer1);
+	free(comparer2);
+	return ns;
+    }else{
+	ns =substract(s1, s2);
+	if(compare(comparer1, comparer2) == comparer2){
+	    free(comparer1);
+	    free(comparer2);
+	    return addminus(ns);
+	}
+	if(compare(comparer1, comparer2) == comparer1){
+	    free(comparer1);
+	    free(comparer2);
+	    return ns;
+	}
+	free(comparer1);
+	free(comparer2);
+	return  ns;
+    }
+
 }
 
 char* substract(char* s1, char* s2){
@@ -375,18 +498,6 @@ char* substract(char* s1, char* s2){
     return result;
 }
 
-int equal(char* s1, char* s2){
-    int i = 0;
-    int len1 = stringlen(s1);
-    int len2 = stringlen(s2);
-    if(len1 != len2)return 0;
-    while(s1[i] !='\0'&& s2[i]!='\0'){
-	if(s1[i]!= s2[i])return 0;
-	i++;
-    }
-    return 1;
-}
-
 struct list* calculate(struct list* list){
     struct list* stack = NULL;
     struct list* temp1;
@@ -395,7 +506,7 @@ struct list* calculate(struct list* list){
 	if(equal(list->word, "+")){
 	    temp1 = stack;
 	    temp2 = stack->link;
-	    stack = addlist2(stack->link->link ,add2(stack->word, stack->link->word));
+	    stack = addlist2(stack->link->link ,dispatchadd(stack->word, stack->link->word));
 	    free(temp1);
 	    free(temp2);
 	    free(list->word);
@@ -403,7 +514,7 @@ struct list* calculate(struct list* list){
 	else if(equal(list->word, "-")){
 	    temp1 = stack;
 	    temp2 = stack->link;
-	    stack = addlist2(stack->link->link ,substract(stack->word, stack->link->word));
+	    stack = addlist2(stack->link->link ,dispatchsub(stack->word, stack->link->word));
 	    free(temp1);
 	    free(temp2);
 	    free(list->word);
@@ -411,7 +522,7 @@ struct list* calculate(struct list* list){
 	else if(equal(list->word, "*")){
 	    temp1 = stack;
 	    temp2 = stack->link;
-	    stack = addlist2(stack->link->link ,mult(stack->word, stack->link->word));
+	    stack = addlist2(stack->link->link ,dispatchmult(stack->word, stack->link->word));
 	    free(temp1);
 	    free(temp2);
 	    free(list->word);
@@ -429,9 +540,7 @@ struct list* calculate(struct list* list){
 
 
 int main(){
-    printlist(calculate(split("1 1 + 44 * 88 -")));
-//    freelistnwords(NULL);
-//    freelist(NULL);
+    printlist(calculate(split("1 1 + 44 * -88 +")));
     printf("\n free: %d , malloc: %d\n", freecounter, malloccounter);
     return 0;
 }
